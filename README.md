@@ -45,7 +45,7 @@ python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb True
 
 `tf_download_and_trt_model.py` will be your pretrained model savior. You're able to download pretrained models *unoptimized* from zoo and have them placed in thetf_download_and_trt_model.py  `./data` directory along side the ms coco labels. After download, it will run the TensorRT optimization over them and leave you with a file named `[model]_trt_graph.pb` for use. Example use:
 
-```tf_download_and_trt_model.py 
+```
 tf_download_and_trt_model.py [model]
 ```
 
@@ -60,18 +60,20 @@ There are other models available, but considering the use-case of this project i
 ## A Quick Start...
 
 Download and install the VimbaSDK for ARMv8 64-bit from https://www.alliedvision.com/en/products/software.html#agb-modal-content-5496
+```
 git clone https://github.com/SunnyAVT/jetson_nano_avtcamera_tracking.git
 cd jetson_nano_avtcamera_tracking
 ./install.sh
 pip3 install pymba
-python3 tf_download_and_trt_model.py ssd_mobilenet_v1_coco      A Quick Start# it takes a few minutes for the pre-train data downloading
+python3 tf_download_and_trt_model.py ssd_mobilenet_v1_coco   #it takes a few minutes for the pre-train data downloading
 python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb
-
+```
 
 ## Trouble shoot...
 
 1) If Allied Vision camera fails to work, try to run the "VimbaViewer" software coming with VimbaSDK to test and verify if camera can work well. 
-VimbaViewer software locates in "~/Vimba_3_0/Tools/Viewer/Bin/arm_64bit$"  Please read "ReleaseNotes.txt" carefully under "~/Vimba_3_0/Documentation" before running VimbaViewer.
+VimbaViewer software locates in "~/Vimba_3_0/Tools/Viewer/Bin/arm_64bit$"  
+Please read "ReleaseNotes.txt" carefully under "~/Vimba_3_0/Documentation" before running VimbaViewer.
 2) If application was terminated by interrupt, you could need to delete one temporary file to release the camera as below
 cd /dev/shm
 sunny@sunny-nano:/dev/shm$ ls
