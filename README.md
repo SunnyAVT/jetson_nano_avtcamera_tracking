@@ -22,11 +22,7 @@ Getting the right versions of Tensorflow, protobufs, etc and having everyone pla
 
 This can be accomplished via `./install.sh` run in the root of this repository, where all the models are going to be installed and linked.
 
-### Download of pretrained models for real-time detection <a href="https://www.buymeacoffee.com/stevemacenski" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
-8
-
-<a href="https://www.buymeacoffee.com/stevemacenski" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
-8
+### Download of pretrained models for real-time detection 
 
 Scripts to automatically download pretrained Tensorflow inference graphs and checkpoints, then optimize with TensorRT (which I found as a critical must-have to even *run* on the Nano).
 
@@ -43,8 +39,6 @@ This uses a constant velocity Kalman Filter to track detections in the image fra
 ## Walk-through
 
 `jetson_live_object_detection.py` is the main live object detection program. It will take no flags and run in a debug mode with printed statements about detections found and a visualization. The visualization will include the bounding boxes around an object where the line thickness is proportional to confidence. Example use to run an ssd mobilenet v1 trt optimized model in debug mode:
-git clone https://github.com/SunnyAVT/jetson_nano_avtcamera_tracking.git
-cd jetson_nano_avtcamera_tracking
 ```
 python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb True
 ```
@@ -64,7 +58,22 @@ There are other models available, but considering the use-case of this project i
 
 
 ## A Quick Start...
+
+Download and install the VimbaSDK for ARMv8 64-bit from https://www.alliedvision.com/en/products/software.html#agb-modal-content-5496
 git clone https://github.com/SunnyAVT/jetson_nano_avtcamera_tracking.git
 cd jetson_nano_avtcamera_tracking
-python3 tf_download_and_trt_model.py ssd_mobilenet_v1_coco
+./install.sh
+pip3 install pymba
+python3 tf_download_and_trt_model.py ssd_mobilenet_v1_coco      A Quick Start# it takes a few minutes for the pre-train data downloading
 python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb
+
+
+## Trouble shoot...
+
+1) If Allied Vision camera fails to work, try to run the "VimbaViewer" software coming with VimbaSDK to test and verify if camera can work well. 
+VimbaViewer software locates in "~/Vimba_3_0/Tools/Viewer/Bin/arm_64bit$"  Please read "ReleaseNotes.txt" carefully under "~/Vimba_3_0/Documentation" before running VimbaViewer.
+2) If application was terminated by interrupt, you could need to delete one temporary file to release the camera as below
+cd /dev/shm
+sunny@sunny-nano:/dev/shm$ ls
+bfa39a16baccad8a6e28ea931d54d339fee2ae8f  PHS-5470
+sunny@sunny-nano:/dev/shm$ rm bfa39a16baccad8a6e28ea931d54d339fee2ae8f 
