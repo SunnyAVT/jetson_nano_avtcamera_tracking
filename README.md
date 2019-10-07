@@ -1,7 +1,8 @@
-# jetson_nano_detection_and_tracking
-Jetson Nano ML install scripts, automated optimization of robotics detection models, and filter-based tracking of detections
+# jetson_nano_avtcamera_tracking
+jetson_nano_avtcamera_tracking was created by Sunny Lei in Allied Vision Asia. This is project as based on the Jest Nano example project, Sunny make it working with Allied Vision camera(GiGE or USB3 camera).
+The original repository of this project comes from https://github.com/SteveMacenski/jetson_nano_detection_and_tracking.git
 
-<a href="https://www.buymeacoffee.com/stevemacenski" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+Jetson Nano ML install scripts, automated optimization of robotics detection models, and filter-based tracking of detections
 
 <p align="center">
   <img width="300" height="300" src="media/jetson_gif.gif">
@@ -38,12 +39,11 @@ This uses a constant velocity Kalman Filter to track detections in the image fra
 ## Walk-through
 
 `jetson_live_object_detection.py` is the main live object detection program. It will take no flags and run in a debug mode with printed statements about detections found and a visualization. The visualization will include the bounding boxes around an object where the line thickness is proportional to confidence. Example use to run an ssd mobilenet v1 trt optimized model in debug mode:
-
 ```
 python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb True
 ```
 
-`tf_download_and_trt_model.py` will be your pretrained model savior. You're able to download pretrained models *unoptimized* from zoo and have them placed in the `./data` directory along side the ms coco labels. After download, it will run the TensorRT optimization over them and leave you with a file named `[model]_trt_graph.pb` for use. Example use:
+`tf_download_and_trt_model.py` will be your pretrained model savior. You're able to download pretrained models *unoptimized* from zoo and have them placed in thetf_download_and_trt_model.py  `./data` directory along side the ms coco labels. After download, it will run the TensorRT optimization over them and leave you with a file named `[model]_trt_graph.pb` for use. Example use:
 
 ```
 tf_download_and_trt_model.py [model]
@@ -55,3 +55,27 @@ Model options include:
 - ssd_inception_v2_coco
 
 There are other models available, but considering the use-case of this project is real-time detection in robotics, these are your main valid options. I make no warranty of other model uses.
+
+
+## A Quick Start...
+
+Download and install the VimbaSDK for ARMv8 64-bit from https://www.alliedvision.com/en/products/software.html#agb-modal-content-5496
+```
+git clone https://github.com/SunnyAVT/jetson_nano_avtcamera_tracking.git
+cd jetson_nano_avtcamera_tracking
+./install.sh
+pip3 install pymba
+python3 tf_download_and_trt_model.py ssd_mobilenet_v1_coco   #it takes a few minutes for the pre-train data downloading
+python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb
+```
+
+## Trouble shoot...
+
+1) If Allied Vision camera fails to work, try to run the "VimbaViewer" software coming with VimbaSDK to test and verify if camera can work well. 
+VimbaViewer software locates in "~/Vimba_3_0/Tools/Viewer/Bin/arm_64bit$"  
+Please read "ReleaseNotes.txt" carefully under "~/Vimba_3_0/Documentation" before running VimbaViewer.
+2) If application was terminated by interrupt, you could need to delete one temporary file to release the camera as below
+cd /dev/shm
+sunny@sunny-nano:/dev/shm$ ls
+bfa39a16baccad8a6e28ea931d54d339fee2ae8f  PHS-5470
+sunny@sunny-nano:/dev/shm$ rm bfa39a16baccad8a6e28ea931d54d339fee2ae8f 
