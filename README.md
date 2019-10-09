@@ -73,8 +73,8 @@ python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb
 ## Trouble shoot...
 
 1) If Allied Vision camera fails to work, try to run the "VimbaViewer" software coming with VimbaSDK to test and verify if camera can work well. 
-VimbaViewer software locates in "~/Vimba_3_0/Tools/Viewer/Bin/arm_64bit$"  
-Please read "ReleaseNotes.txt" carefully under "~/Vimba_3_0/Documentation" before running VimbaViewer.
+VimbaViewer software locates in "install_folder/Vimba_3_0/Tools/Viewer/Bin/arm_64bit$"  
+Please read "ReleaseNotes.txt" carefully under "install_folder/Vimba_3_0/Documentation" before running VimbaViewer.
 2) If application was terminated by interrupt, you could need to delete one temporary file to release the camera as below
 cd /dev/shm
 sunny@sunny-nano:/dev/shm$ ls
