@@ -11,6 +11,7 @@ class AVTCamera():
         self.cams = None
         self.width = width
         self.height = height
+        self.curCam = None
 
     def init_cameras(self):
         # vimba object
@@ -32,6 +33,8 @@ class AVTCamera():
                 feature_w = cam.feature("Width")
                 feature_w.value = self.width
                 cam.arm('SingleFrame')
+                print("Device {} open OK".format(idx))
+                self.curCam = cam
             except VimbaException as e:
                 if e.error_code == VimbaException.ERR_TIMEOUT:
                     print(e)
@@ -39,13 +42,19 @@ class AVTCamera():
                     cam.arm('SingleFrame')
                 elif e.error_code == VimbaException.ERR_DEVICE_NOT_OPENED:
                     print(e)
-                    cam.open()
-                    cam.arm('SingleFrame')
+                    try:
+                        cam.open()
+                        cam.arm('SingleFrame')
+                    except:
+                        print("Open error, open next camera...")
+                        continue
+                print("Device {} open OK".format(idx))
+                self.curCam = cam
 
     def startStreaming(self):
         print ("Starting to stream camera...")
         self.init_cameras()
-        print(type(self.cams))
+        #print(type(self.cams))
         print("len of cams {}" .format(len(self.cams)))
 
         #if self.cams:
@@ -97,19 +106,19 @@ class AVTCamera():
             # Note: wait to do -- other format, such as YUV411Packed, YUV422Packed, YUV444Packed
             frame_8bits = np.ndarray(buffer=frame.buffer_data(), dtype=np.uint8, shape=(Height, Width))
 
-        return frame_8bits
+        return frame_pixel_format, frame_8bits
 
     def getFrame(self):
-        raw_frame = self.cams[0].acquire_frame()
-        frame = self.convertFrame(raw_frame)
-        if self.cams:
-            return frame
+        raw_frame = self.curCam.acquire_frame()
+        type, frame = self.convertFrame(raw_frame)
+        if self.curCam:
+            return type, frame
         else:
             print ("Failed to capture frame!")
             return None
 
     def isOpened(self):
-        if self.cams:
+        if self.curCam:
             return True
         else:
             return False

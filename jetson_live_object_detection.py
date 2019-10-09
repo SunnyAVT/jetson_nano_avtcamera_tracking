@@ -7,14 +7,15 @@ import sys
 import gi
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
-from src.mipi_camera import MipiCamera
+from src.avt_camera import AVTCamera
 from src.object_detector import ObjectDetection
 
 """ Jetson Live Object Detector """
 class JetsonLiveObjectDetection():
     def __init__(self, model, debug=False, fps = 10.):
         self.debug = debug
-        self.camera = MipiCamera(300, 300)
+        #self.camera = AVTCamera(1280, 1024)
+        self.camera = AVTCamera(640, 480)
         self.model = model
         self.rate = float(1. / fps)
         self.detector = ObjectDetection('./data/' + self.model)
@@ -37,9 +38,8 @@ class JetsonLiveObjectDetection():
                 cv2.rectangle(img, (x, y), (right, bottom), (125,255, 21), thickness=thickness)
                 detections.append(self.detector.labels[str(classId)])
 
-        print ("Debug: Found objects: " + str(' '.join(detections)) + ".")
-
-        cv2.imshow('Jetson Live Detection', img)
+        print("Debug: Found objects: " + str(' '.join(detections)) + ".")
+        cv2.imshow('AVT Live Detection', img)
 
     def start(self):
         print ("Starting Live object detection, may take a few minutes to initialize...")
@@ -55,8 +55,27 @@ class JetsonLiveObjectDetection():
         while True:
             curr_time = time.time()
 
-            img = self.camera.getFrame()
-            scores, boxes, classes, num_detections = self.detector.detect(img)
+            frame_pixel_format, img = self.camera.getFrame()
+            #input must be color, convert gray to color here -- Sunny notice
+            if (frame_pixel_format == "Mono8" or frame_pixel_format == "Mono10" or frame_pixel_format == "Mono12" or frame_pixel_format == "Mono14"):
+                colorImg = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+            elif (frame_pixel_format == "BayerRG8" or frame_pixel_format == "BayerRG12" or frame_pixel_format == "BayerRG12Packed"):
+                colorImg = cv2.cvtColor(img, cv2.COLOR_BAYER_RG2RGB )
+            elif (frame_pixel_format == "BayerGR8" or frame_pixel_format == "BayerGR12" or frame_pixel_format == "BayerGR12Packed"):
+                colorImg = cv2.cvtColor(img, cv2.COLOR_BAYER_GR2RGB )
+            elif (frame_pixel_format == "RGB8Packed" or frame_pixel_format == "BGR8Packed"):
+                RGBImg = img.reshape(Height, Width, 3)
+                colorImg = cv2.cvtColor(RGBImg, cv2.COLOR_BGR2RGB)
+            else:
+                print("Not supported image format")
+                exit(-1)
+
+            #colorImg = cv2.resize(colorImg, (600, 400))
+            #cv2.imshow("Cam", colorImg)
+            #keyCode = cv2.waitKey(20)
+            #time.sleep(2)
+            scores, boxes, classes, num_detections = self.detector.detect(colorImg)
+            #scores, boxes, classes, num_detections = self.detector.detect(colorImg)
 
             if self.debug:
                 self._visualizeDetections(img, scores, boxes, classes, num_detections)
