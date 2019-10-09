@@ -78,7 +78,7 @@ class JetsonLiveObjectDetection():
             #scores, boxes, classes, num_detections = self.detector.detect(colorImg)
 
             if self.debug:
-                self._visualizeDetections(img, scores, boxes, classes, num_detections)
+                self._visualizeDetections(colorImg, scores, boxes, classes, num_detections)
                 print ("Debug: Running at: " + str(1.0/(time.time() - curr_time)) + " Hz.")
 
             if cv2.waitKey(1) == ord('q'):
