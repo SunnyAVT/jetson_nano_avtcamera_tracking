@@ -67,7 +67,9 @@ cd jetson_nano_avtcamera_tracking
 ./install.sh
 pip3 install pymba
 python3 tf_download_and_trt_model.py ssd_mobilenet_v1_coco   #it takes a few minutes for the pre-train data downloading
-python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb 
+python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb
+python3 tf_download_and_trt_model.py ssd_mobilenet_v2_coco   #Try another training mode
+python3 jetson_live_object_detection.py ssd_mobilenet_v2_trt_graph.pb 
 ```
 
 ## Trouble shoot...
