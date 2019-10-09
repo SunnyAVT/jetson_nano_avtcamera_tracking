@@ -26,11 +26,11 @@ This can be accomplished via `./install.sh` run in the root of this repository, 
 
 Scripts to automatically download pretrained Tensorflow inference graphs and checkpoints, then optimize with TensorRT (which I found as a critical must-have to even *run* on the Nano).
 
-Also there's nothing here that prohibits you from using your own Tensorflow model and then using the same scripts to optimize it with TensorRT and then deploy as described below. I have retrained a model from the zoo and followed these same instructions with equal success (I really needed that additional glass of beer class for... reasons).
+Also there's nothing here that prohibits you from using your own Tensorflow model and then using the same scripts to optimize it with TensorRT and then deploy as described below. 
 
-### Execution of live detection with an attached MIPI-based camera
+### Execution of live detection with an Allied Vision camera
 
-This will run the argus streamer for a MIPI camera compatible with the Jetson Nano. There are a number out there available, I happen to use the Raspberry Pi v2.1 camera simply because I had it around from another project and also because its shockingly high resolution for a $20 toy. 
+This will run the argus streamer for a Allied Vision camera(GiGE or USB3 interface camera, CSI driver for AVT camera is not ready yet until Nov 2019) compatible with the Jetson Nano.  
 
 ### Filter-based tracking of detections
 
@@ -60,13 +60,14 @@ There are other models available, but considering the use-case of this project i
 ## A Quick Start...
 
 Download and install the VimbaSDK for ARMv8 64-bit from https://www.alliedvision.com/en/products/software.html#agb-modal-content-5496
+
 ```
 git clone https://github.com/SunnyAVT/jetson_nano_avtcamera_tracking.git
 cd jetson_nano_avtcamera_tracking
 ./install.sh
 pip3 install pymba
 python3 tf_download_and_trt_model.py ssd_mobilenet_v1_coco   #it takes a few minutes for the pre-train data downloading
-python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb
+python3 jetson_live_object_detection.py ssd_mobilenet_v1_trt_graph.pb 
 ```
 
 ## Trouble shoot...
